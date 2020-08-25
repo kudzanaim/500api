@@ -36,7 +36,7 @@ app.get('/popular/:filter/:page', async(req,res)=>{
     const ifFilterIsValid = validFilters.includes(filter);
 
     if(ifFilterIsValid){
-        const results = await axios.get(URL(`featured=${filter}&page=${page}&rpp=20`)).then(response => response).catch(error => error);
+        const results = await axios.get(URL(`feature=${filter}&page=${page}&rpp=20`)).then(response => response).catch(error => error);
         
         return res.status(200).send(results.data)
     }
