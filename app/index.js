@@ -15,7 +15,7 @@ app.use(cors);
 const CKEY = process.env.CUSTOMER_KEY;
 
 // URL Generator
-const URL = (PARAMS)=>`https://api.500px.com/v1/photos?consumer_key=${CKEY}&${PARAMS}`;
+const URL = (PARAMS)=>`https://api.500px.com/v1/photos${PARAMS}`;
 
 
 // Routes:
@@ -30,13 +30,19 @@ app.get('/', async(req,res)=>{
     `)
 });
 
+app.get('/photo/:id', async(req,res)=>{
+    const results = await axios.get( URL(`/${req.params.id}?consumer_key=${CKEY}`) ).then(response => response).catch(error => error);
+
+    return res.status(200).send(results.data.photo)
+});
+
 app.get('/popular/:filter/:page', async(req,res)=>{
     const {filter, page} = req.params;
     const validFilters = ['popular','highest_rated','upcoming' ,'editors','fresh_today','fresh_yesterday','fresh_today','fresh_week' ];
     const ifFilterIsValid = validFilters.includes(filter);
 
     if(ifFilterIsValid){
-        const results = await axios.get(URL(`feature=${filter}&page=${page}&rpp=20`)).then(response => response).catch(error => error);
+        const results = await axios.get(URL(`?consumer_key=${CKEY}&feature=${filter}&page=${page}&rpp=20`)).then(response => response).catch(error => error);
         
         return res.status(200).send(results.data)
     }
